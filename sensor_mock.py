@@ -14,6 +14,7 @@ class SensorData:
         temperature = round(random.uniform(self.min_temp, self.max_temp), 1)
         humidity = round(random.uniform(self.min_humidity, self.max_humidity), 1)
 
+        # Modifica los los rangos de Temperatura
         if temperature < 25.6:
             status = "normal"
         elif temperature < 31.8:

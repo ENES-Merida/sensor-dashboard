@@ -7,7 +7,9 @@
         <h1
             class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
         >
-            Real-time Environmental Dashboard
+            <!-- -------------------------------------- -->
+            Título para la página web
+            <!-- -------------------------------------- -->
         </h1>
         <div class="flex items-center gap-2">
             <div
@@ -27,8 +29,12 @@
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
                     <div class="flex items-center gap-2 mb-4">
-                        <div class="badge badge-primary">Real-time</div>
-                        <h2 class="card-title">Live Sensors</h2>
+                        <div class="badge badge-primary">
+                            <!-- -------------------------- -->
+                            En Riemto Teal
+                            <!-- -------------------------- -->
+                        </div>
+                        <h2 class="card-title">Sensores en Vivo</h2>
                     </div>
                     <div hx-ext="sse" sse-connect="/stream">
                         <div
@@ -55,7 +61,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="card bg-base-100 shadow-xl">
                     <div class="card-body">
-                        <h3 class="card-title text-lg">Temperature</h3>
+                        <h3 class="card-title text-lg">Temperatura</h3>
                         <div class="h-48">
                             <canvas id="tempChart"></canvas>
                         </div>
@@ -64,7 +70,11 @@
 
                 <div class="card bg-base-100 shadow-xl">
                     <div class="card-body">
-                        <h3 class="card-title text-lg">Humidity</h3>
+                        <h3 class="card-title text-lg">
+                            <!-- -------------------------- -->
+                            Humedata
+                            <!-- -------------------------- -->
+                        </h3>
                         <div class="h-48">
                             <canvas id="humidityChart"></canvas>
                         </div>
@@ -170,14 +180,14 @@
             const html = `
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div class="stat bg-primary/10 rounded-lg p-4">
-          <div class="stat-title">Temperature</div>
+          <div class="stat-title">Temperatura</div>
           <div class="stat-value text-primary">${data.temperature}°C</div>
-          <div class="stat-desc">Real-time</div>
+          <div class="stat-desc">En Tiempo Real</div>
         </div>
         <div class="stat bg-secondary/10 rounded-lg p-4">
-          <div class="stat-title">Humidity</div>
+          <div class="stat-title">Humedad</div>
           <div class="stat-value text-secondary">${data.humidity}%</div>
-          <div class="stat-desc">Relative</div>
+          <div class="stat-desc">Relativa</div>
         </div>
       </div>
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
@@ -200,7 +210,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-6 w-6 shrink-0 stroke-current">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
-      <span><strong>Critical Alert:</strong> Temperature ${data.temperature}°C, Humidity ${data.humidity}%</span>
+      <span><strong>Alerta Crítica:</strong> Temperatura ${data.temperature}°C, Humedad ${data.humidity}%</span>
     </div>
   `;
 
@@ -272,7 +282,7 @@
     document.body.addEventListener("htmx:sseOpen", function (e) {
         document.getElementById("connection-indicator").className =
             "loading loading-ring loading-sm text-success";
-        document.getElementById("connection-status").textContent = "Connected";
+        document.getElementById("connection-status").textContent = "Conectado";
     });
 
     document.body.addEventListener("htmx:sseError", function (e) {
