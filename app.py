@@ -14,7 +14,7 @@ from fastapi.templating import Jinja2Templates
 # from fastapi.staticfiles import StaticFiles
 from sse_starlette import EventSourceResponse
 
-from sensor_realtime import SensorData
+from sensor_arduino import SensorArduinoData
 
 app = FastAPI(debug=True)
 
@@ -23,13 +23,14 @@ app = FastAPI(debug=True)
 
 templates = Jinja2Templates(directory="templates")
 
-sensor = SensorData()
+sensor = SensorArduinoData()
 recent_readings = deque(maxlen=20)
 
 
 if _debug := os.getenv("DEBUG"):
     hot_reload = arel.HotReload(paths=[arel.Path(".")])
-    app.add_websocket_route("/hot-reload", route=hot_reload, name="hot-reload")
+    # app.add_websocket_route("/hot-reload", route=hot_reload, name="hot-reload")
+    app.mount("/hot-reload", hot_reload)
     app.add_event_handler("startup", hot_reload.startup)
     app.add_event_handler("shutdown", hot_reload.shutdown)
     templates.env.globals["DEBUG"] = _debug
@@ -37,7 +38,7 @@ if _debug := os.getenv("DEBUG"):
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request, hx_request: Annotated[Union[str | None], Header()] = None):
+def home(request: Request, hx_request: Annotated[Union[str, None], Header()] = None):
     return templates.TemplateResponse("index.html", context={"request": request})
 
 
@@ -64,7 +65,7 @@ async def stream_data():
                 recent_readings.append(data)
 
                 yield {"event": "sensor_update", "data": json.dumps(data)}
-                await asyncio.sleep(900)
+                await asyncio.sleep(1)
         except asyncio.CancelledError:
             pass
 
