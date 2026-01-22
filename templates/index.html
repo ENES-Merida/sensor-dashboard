@@ -1,9 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container mx-auto px-4 py-4 max-w-7xl">
     <!-- Header -->
-    <div
-        class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4"
-    >
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <h1
             class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
         >
@@ -16,9 +14,7 @@
                 class="loading loading-ring loading-sm text-success"
                 id="connection-indicator"
             ></div>
-            <span class="text-sm text-base-content/70" id="connection-status"
-                >Connecting...</span
-            >
+            <span class="text-sm text-base-content/70" id="connection-status">Connecting...</span>
         </div>
     </div>
 
@@ -37,18 +33,10 @@
                         <h2 class="card-title">Sensores en Vivo</h2>
                     </div>
                     <div hx-ext="sse" sse-connect="/stream">
-                        <div
-                            id="sensor-display"
-                            sse-swap="sensor_update"
-                            hx-swap="innerHTML"
-                        >
+                        <div id="sensor-display" sse-swap="sensor_update" hx-swap="innerHTML">
                             <div class="flex items-center justify-center py-8">
-                                <div
-                                    class="loading loading-spinner loading-lg text-primary"
-                                ></div>
-                                <span class="ml-4"
-                                    >Connecting to sensors...</span
-                                >
+                                <div class="loading loading-spinner loading-lg text-primary"></div>
+                                <span class="ml-4">Connecting to sensors...</span>
                             </div>
                         </div>
                     </div>
@@ -59,11 +47,32 @@
         <!-- Charts Side by Side -->
         <div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Fila 1: Temperatura 1 y 2 -->
                 <div class="card bg-base-100 shadow-xl">
                     <div class="card-body">
-                        <h3 class="card-title text-lg">Temperatura</h3>
+                        <h3 class="card-title text-lg">Temperatura 1</h3>
                         <div class="h-48">
-                            <canvas id="tempChart"></canvas>
+                            <canvas id="temp1Chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-lg">Temperatura 2</h3>
+                        <div class="h-48">
+                            <canvas id="temp2Chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fila 2: Temperatura 3 y Humedad -->
+
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-lg text-pink-500">Temperatura 3</h3>
+                        <div class="h-48">
+                            <canvas id="temp3Chart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -97,28 +106,31 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    let tempChart, humidityChart;
+    let temp1Chart, temp2Chart, temp3Chart, humidityChart;
 
     // Initialize charts
-    function initCharts(tempData, humidityData, labels) {
-        const tempCanvas = document.getElementById("tempChart");
+    function initCharts(temp1Data, temp2Data, temp3Data, humidityData, labels) {
+        const temp1Canvas = document.getElementById("temp1Chart");
+        const temp2Canvas = document.getElementById("temp2Chart");
+        const temp3Canvas = document.getElementById("temp3Chart");
         const humidityCanvas = document.getElementById("humidityChart");
 
-        if (!tempCanvas || !humidityCanvas) {
+        if (!temp1Canvas || !temp2Canvas || !temp3Canvas || !humidityCanvas) {
             console.error("Chart canvases not found");
             return;
         }
 
-        const tempCtx = tempCanvas.getContext("2d");
-        tempChart = new Chart(tempCtx, {
+        // Temperatura 1 - Azul
+        const temp1Ctx = temp1Canvas.getContext("2d");
+        temp1Chart = new Chart(temp1Ctx, {
             type: "line",
             data: {
                 labels: labels,
                 datasets: [
                     {
-                        data: tempData,
-                        borderColor: "rgb(99, 102, 241)",
-                        backgroundColor: "rgba(99, 102, 241, 0.1)",
+                        data: temp1Data,
+                        borderColor: "rgb(59, 130, 246)",
+                        backgroundColor: "rgba(59, 130, 246, 0.1)",
                         borderWidth: 2,
                         fill: true,
                         tension: 0.4,
@@ -136,6 +148,63 @@
             },
         });
 
+        // Temperatura 2 - Purpura
+        const temp2Ctx = temp2Canvas.getContext("2d");
+        temp2Chart = new Chart(temp2Ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        data: temp2Data,
+                        borderColor: "rgb(168, 85, 247)",
+                        backgroundColor: "rgba(168, 85, 247, 0.1)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: false },
+                    x: { display: false },
+                },
+            },
+        });
+
+        // Temperatura 3 - Rosa
+        const temp3Ctx = temp3Canvas.getContext("2d");
+        temp3Chart = new Chart(temp3Ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        data: temp3Data,
+                        borderColor: "rgb(236, 72, 153)",
+                        backgroundColor: "rgba(236, 72, 153, 0.1)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: false },
+                    x: { display: false },
+                },
+            },
+        });
+
+        // Humedad - Verde
         const humidityCtx = humidityCanvas.getContext("2d");
         humidityChart = new Chart(humidityCtx, {
             type: "line",
@@ -178,10 +247,20 @@
                       : "badge-error";
 
             const html = `
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-        <div class="stat bg-primary/10 rounded-lg p-4">
-          <div class="stat-title">Temperatura</div>
-          <div class="stat-value text-primary">${data.temperature}°C</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div class="stat bg-blue-500/10 rounded-lg p-4">
+          <div class="stat-title">Temperatura 1</div>
+          <div class="stat-value text-primary">${data.temperature1}°C</div>
+          <div class="stat-desc">En Tiempo Real</div>
+        </div>
+        <div class="stat bg-purple-500/10 rounded-lg p-4">
+          <div class="stat-title">Temperatura 2</div>
+          <div class="stat-value text-primary">${data.temperature2}°C</div>
+          <div class="stat-desc">En Tiempo Real</div>
+        </div>
+        <div class="stat bg-pink-500/10 rounded-lg p-4">
+          <div class="stat-title">Temperatura 3</div>
+          <div class="stat-value text-primary">${data.temperature3}°C</div>
           <div class="stat-desc">En Tiempo Real</div>
         </div>
         <div class="stat bg-secondary/10 rounded-lg p-4">
@@ -210,7 +289,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-6 w-6 shrink-0 stroke-current">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
-      <span><strong>Alerta Crítica:</strong> Temperatura ${data.temperature}°C, Humedad ${data.humidity}%</span>
+      <span><strong>Alerta Crítica:</strong> Temperatura ${data.temperature3}°C, Humedad ${data.humidity}%</span>
     </div>
   `;
 
@@ -222,9 +301,7 @@
                     setTimeout(() => {
                         const alert = document.getElementById("critical-alert");
                         if (alert) {
-                            alert.classList.add(
-                                "animate-[slideOutToTop_0.3s_ease-in]",
-                            );
+                            alert.classList.add("animate-[slideOutToTop_0.3s_ease-in]");
                             setTimeout(() => alert.remove(), 300);
                         }
                     }, 10000);
@@ -233,9 +310,7 @@
                 // Remove alert if status is not critical
                 const existingAlert = document.getElementById("critical-alert");
                 if (existingAlert) {
-                    existingAlert.classList.add(
-                        "animate-[slideOutToTop_0.3s_ease-in]",
-                    );
+                    existingAlert.classList.add("animate-[slideOutToTop_0.3s_ease-in]");
                     setTimeout(() => existingAlert.remove(), 300);
                 }
             }
@@ -248,29 +323,40 @@
     // Update charts when HTMX swaps chart data
     document.body.addEventListener("htmx:afterSwap", function (e) {
         if (e.target.id === "chart-data") {
-            const dataElement =
-                e.target.querySelector("[data-temp]") || e.target;
+            const dataElement = e.target.querySelector("[data-temp1]") || e.target;
 
-            if (!dataElement.dataset.temp) {
-                console.error("No temp data found");
+            if (!dataElement.dataset.temp1) {
+                console.error("No temp1 data found");
                 return;
             }
 
             try {
-                const tempData = JSON.parse(dataElement.dataset.temp);
+                const temp1Data = JSON.parse(dataElement.dataset.temp1);
+                const temp2Data = JSON.parse(dataElement.dataset.temp2);
+                const temp3Data = JSON.parse(dataElement.dataset.temp3);
                 const humidityData = JSON.parse(dataElement.dataset.humidity);
                 const labels = JSON.parse(dataElement.dataset.labels);
 
-                if (tempChart && humidityChart) {
-                    tempChart.data.datasets[0].data = tempData;
-                    tempChart.data.labels = labels;
-                    tempChart.update("none");
+                if (temp1Chart && temp2Chart && temp3Chart && humidityChart) {
+                    // Actualizar gráficas existentes
+                    temp1Chart.data.datasets[0].data = temp1Data;
+                    temp1Chart.data.labels = labels;
+                    temp1Chart.update("none");
+
+                    temp2Chart.data.datasets[0].data = temp2Data;
+                    temp2Chart.data.labels = labels;
+                    temp2Chart.update("none");
+
+                    temp3Chart.data.datasets[0].data = temp3Data;
+                    temp3Chart.data.labels = labels;
+                    temp3Chart.update("none");
 
                     humidityChart.data.datasets[0].data = humidityData;
                     humidityChart.data.labels = labels;
                     humidityChart.update("none");
                 } else {
-                    initCharts(tempData, humidityData, labels);
+                    // Crear gráficas por primera vez
+                    initCharts(temp1Data, temp2Data, temp3Data, humidityData, labels);
                 }
             } catch (error) {
                 console.error("JSON parse error:", error);

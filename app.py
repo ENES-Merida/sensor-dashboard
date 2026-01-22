@@ -88,7 +88,9 @@ async def get_chart_data(request: Request):
                 data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             recent_readings.append(data)
 
-    temp_data = [r["temperature"] for r in recent_readings]
+    temp_data1 = [r["temperature1"] for r in recent_readings]
+    temp_data2 = [r["temperature2"] for r in recent_readings]
+    temp_data3 = [r["temperature3"] for r in recent_readings]
     humidity_data = [r["humidity"] for r in recent_readings]
     labels = [str(i) for i in range(len(recent_readings))]
 
@@ -96,11 +98,14 @@ async def get_chart_data(request: Request):
         "chart_data.html",
         {
             "request": request,
-            "temp_data": json.dumps(temp_data),
+            "temp_data1": json.dumps(temp_data1),
+            "temp_data2": json.dumps(temp_data2),
+            "temp_data3": json.dumps(temp_data3),
             "humidity_data": json.dumps(humidity_data),
             "labels": json.dumps(labels),
         },
     )
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
