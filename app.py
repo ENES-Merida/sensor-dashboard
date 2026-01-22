@@ -65,7 +65,7 @@ async def stream_data():
                 recent_readings.append(data)
 
                 yield {"event": "sensor_update", "data": json.dumps(data)}
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.1)
         except asyncio.CancelledError:
             pass
 
@@ -101,3 +101,9 @@ async def get_chart_data(request: Request):
             "labels": json.dumps(labels),
         },
     )
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cierra conexión del sensor al apagar"""
+    print("⏹️  Cerrando conexión del sensor...")
+    sensor.close()
